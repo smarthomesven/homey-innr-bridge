@@ -1,0 +1,13 @@
+{
+    "pair": {
+        "save": "Save",
+        "saving": "Saving",
+        "email": "Email",
+        "password": "Password",
+        "country": "Country",
+        "select": "Select a country",
+        "noemail": "Enter an email address",
+        "nopassword": "Enter a password",
+        "nocountry": "Choose a country"
+    }
+}

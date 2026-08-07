@@ -1,0 +1,1 @@
+With this app, you can connect your Innr devices via the Innr bridge. This way, you can always update your devices via OTA and use all features in the Innr app. This should also be compatible with Innr WiFi devices.

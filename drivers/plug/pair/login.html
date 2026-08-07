@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .error {
+        color: red;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <fieldset class="homey-form-fieldset">
+      <legend class="homey-form-legend">innr</legend>
+      <br>
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="email" data-i18n="pair.email">Email</label>
+        <input class="homey-form-input" id="email" type="text" value="" />
+        <p id="noemail" style="display: none;" class="error" data-i18n="pair.noemail"></p>
+      </div>
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="password" data-i18n="pair.password">Password</label>
+        <input class="homey-form-input" id="password" type="password" value="" />
+        <p id="nopassword" style="display: none;" class="error" data-i18n="pair.nopassword"></p>
+      </div>
+      <div class="homey-form-group">
+        <label class="homey-form-label" for="country" data-i18n="pair.country">Country</label>
+        <select class="homey-form-select" id="country">
+          <option value="" disabled selected data-i18n="pair.select">Select a country</option>
+        </select>
+        <p id="nocountry" style="display: none;" class="error" data-i18n="pair.nocountry">Please choose a country.</p>
+      </div>
+    </fieldset>
+    <p id="failed" style="display: none;" class="error" data-i18n="pair.failed">Something went wrong, did you enter the correct username and password?</p>
+    <button id="save" class="homey-button-primary-full" data-i18n="pair.save">Save</button>
+    <script type="text/javascript">
+      const COUNTRIES = [
+        {countryKey:"region:Bolivia",id:"BO",name:"Bolivia",region:"US"},
+        {countryKey:"region:Brazil",id:"BR",name:"Brazil",region:"US"},
+        {countryKey:"region:Bulgaria",id:"BG",name:"Bulgaria",region:"EU"},
+        {countryKey:"region:Canada",id:"CA",name:"Canada",region:"US"},
+        {countryKey:"region:Chile",id:"CL",name:"Chile",region:"US"},
+        {countryKey:"region:Colombia",id:"CO",name:"Colombia",region:"US"},
+        {countryKey:"region:CostaRica",id:"CR",name:"Costa Rica",region:"US"},
+        {countryKey:"region:Cuba",id:"CU",name:"Cuba",region:"US"},
+        {countryKey:"region:Denmark",id:"DK",name:"Denmark",region:"EU"},
+        {countryKey:"region:DominicanRepublic",id:"DO",name:"Dominican Republic",region:"US"},
+        {countryKey:"region:Ecuador",id:"EC",name:"Ecuador",region:"US"},
+        {countryKey:"region:ElSalvador",id:"SV",name:"El Salvador",region:"US"},
+        {countryKey:"region:Estonia",id:"EE",name:"Estonia",region:"EU"},
+        {countryKey:"region:Finland",id:"FI",name:"Finland",region:"EU"},
+        {countryKey:"region:France",id:"FR",name:"France",region:"EU"},
+        {countryKey:"region:FrenchGuiana",id:"GF",name:"French Guiana",region:"US"},
+        {countryKey:"region:Greece",id:"GR",name:"Greece",region:"EU"},
+        {countryKey:"region:Guatemala",id:"GT",name:"Guatemala",region:"US"},
+        {countryKey:"region:Guyana",id:"GY",name:"Guyana",region:"US"},
+        {countryKey:"region:Haiti",id:"HT",name:"Haiti",region:"US"},
+        {countryKey:"region:Honduras",id:"HN",name:"Honduras",region:"US"},
+        {countryKey:"region:Iceland",id:"IS",name:"Iceland",region:"EU"},
+        {countryKey:"region:Ireland",id:"IE",name:"Ireland",region:"EU"},
+        {countryKey:"region:Italy",id:"IT",name:"Italy",region:"EU"},
+        {countryKey:"region:Jamaica",id:"JM",name:"Jamaica",region:"US"},
+        {countryKey:"region:Latvia",id:"LV",name:"Latvia",region:"EU"},
+        {countryKey:"region:Lithuania",id:"LT",name:"Lithuania",region:"EU"},
+        {countryKey:"region:Luxembourg",id:"LU",name:"Luxembourg",region:"EU"},
+        {countryKey:"region:Malta",id:"MT",name:"Malta",region:"EU"},
+        {countryKey:"region:Mexico",id:"MX",name:"Mexico",region:"US"},
+        {countryKey:"region:Moldova",id:"MD",name:"Moldova",region:"EU"},
+        {countryKey:"region:Monaco",id:"MC",name:"Monaco",region:"EU"},
+        {countryKey:"region:Netherlands",id:"NL",name:"Netherlands",region:"EU"},
+        {countryKey:"region:Nicaragua",id:"NI",name:"Nicaragua",region:"US"},
+        {countryKey:"region:Norway",id:"NO",name:"Norway",region:"EU"},
+        {countryKey:"region:Panama",id:"PA",name:"Panama",region:"US"},
+        {countryKey:"region:Paraguay",id:"PY",name:"Paraguay",region:"US"},
+        {countryKey:"region:Peru",id:"PE",name:"Peru",region:"US"},
+        {countryKey:"region:Portugal",id:"PT",name:"Portugal",region:"EU"},
+        {countryKey:"region:Romania",id:"RO",name:"Romania",region:"EU"},
+        {countryKey:"region:Russia",id:"RU",name:"Russia",region:"EU"},
+        {countryKey:"region:SanMarino",id:"SM",name:"San Marino",region:"EU"},
+        {countryKey:"region:Slovenia",id:"SI",name:"Slovenia",region:"EU"},
+        {countryKey:"region:Spain",id:"ES",name:"Spain",region:"EU"},
+        {countryKey:"region:St.Lucia",id:"LC",name:"St.Lucia",region:"US"},
+        {countryKey:"region:Suriname",id:"SR",name:"Suriname",region:"US"},
+        {countryKey:"region:Sweden",id:"SE",name:"Sweden",region:"EU"},
+        {countryKey:"region:TrinidadandTobago",id:"TT",name:"Trinidad and Tobago",region:"US"},
+        {countryKey:"region:Ukraine",id:"UA",name:"Ukraine",region:"EU"},
+        {countryKey:"region:Albania",id:"AL",name:"Albania",region:"EU"},
+        {countryKey:"region:AntiguaandBarbuda",id:"AG",name:"Antigua and Barbuda",region:"US"},
+        {countryKey:"region:Argentina",id:"AR",name:"Argentina",region:"US"},
+        {countryKey:"region:Bahamas",id:"BS",name:"Bahamas",region:"US"},
+        {countryKey:"region:Belgium",id:"BE",name:"Belgium",region:"EU"},
+        {countryKey:"region:Belize",id:"BZ",name:"Belize",region:"US"},
+        {countryKey:"region:UnitedKingdom",id:"GB",name:"United Kingdom",region:"EU"},
+        {countryKey:"region:UnitedStates",id:"US",name:"United States",region:"US"},
+        {countryKey:"region:Uruguay",id:"UY",name:"Uruguay",region:"US"},
+        {countryKey:"region:Venezuela",id:"VE",name:"Venezuela",region:"US"},
+        {countryKey:"region:Belarus",id:"BY",name:"Belarus",region:"EU"},
+        {countryKey:"region:Germany",id:"DE",name:"Germany",region:"EU"},
+        {countryKey:"region:Slovakia",id:"SK",name:"Slovakia",region:"EU"},
+        {countryKey:"region:CzechRepublic",id:"CZ",name:"Czech Republic",region:"EU"},
+        {countryKey:"region:Austria",id:"AT",name:"Austria",region:"EU"},
+        {countryKey:"region:Liechtenstein",id:"LI",name:"Liechtenstein",region:"EU"},
+        {countryKey:"region:Croatia",id:"HR",name:"Croatia",region:"EU"},
+        {countryKey:"region:Hungary",id:"HU",name:"Hungary",region:"EU"},
+        {countryKey:"region:Macedonia,FormerYugoslavRepublicof",id:"MK",name:"North Macedonia",region:"EU"},
+        {countryKey:"region:Serbia,Montenegro",id:"RS/ME",name:"Serbia",region:"EU"},
+        {countryKey:"region:Anguilla",id:"AI",name:"Anguilla",region:"US"},
+        {countryKey:"region:Barbados",id:"BB",name:"Barbados",region:"US"},
+        {countryKey:"region:Bermuda",id:"BM",name:"Bermuda",region:"US"},
+        {countryKey:"region:VirginIslands",id:"VG",name:"Virgin Islands",region:"US"},
+        {countryKey:"region:CaymanIslands",id:"KY",name:"Cayman Islands",region:"US"},
+        {countryKey:"region:Grenada",id:"GD",name:"Grenada",region:"US"},
+        {countryKey:"region:Montserrat",id:"MS",name:"Montserrat",region:"US"},
+        {countryKey:"region:St.KittsandNevis",id:"KN",name:"St.Kitts and Nevis",region:"US"},
+        {countryKey:"region:St.VincentandtheGrenadines",id:"VC",name:"St.Vincent and the Grenadines",region:"US"},
+        {countryKey:"region:TurksandCaicosIslands",id:"TC",name:"Turks & Caicos",region:"US"},
+        {countryKey:"region:Montenegro",id:"ME",name:"Montenegro",region:"EU"},
+        {countryKey:"region:Cyprus",id:"CY",name:"Cyprus",region:"EU"},
+        {countryKey:"region:Israel",id:"IL",name:"Israel",region:"EU"},
+        {countryKey:"region:Turkey",id:"TR",name:"Turkey",region:"EU"},
+        {countryKey:"region:Switzerland",id:"CH",name:"Switzerland",region:"EU"},
+        {countryKey:"region:Egypt",id:"EG",name:"Egypt",region:"EU"},
+        {countryKey:"region:Poland",id:"PL",name:"Poland",region:"EU"},
+        {countryKey:"region:Andorra",id:"AD",name:"Andorra",region:"EU"},
+        {countryKey:"region:Vatican City State",id:"VA",name:"Vatican City State",region:"EU"}
+      ];
+
+      const emailElement = document.getElementById('email');
+      const passwordElement = document.getElementById('password');
+      const countryElement = document.getElementById('country');
+      const errorElement = document.getElementById('failed');
+      const noEmailElement = document.getElementById('noemail');
+      const noPasswordElement = document.getElementById('nopassword');
+      const noCountryElement = document.getElementById('nocountry');
+      const saveElement = document.getElementById('save');
+
+      // Populate country select options alphabetically
+      COUNTRIES.sort((a, b) => a.name.localeCompare(b.name)).forEach(country => {
+        const option = document.createElement('option');
+        option.value = country.region;
+        option.textContent = country.name;
+        countryElement.appendChild(option);
+      });
+
+      saveElement.addEventListener("click", function (e) {
+        errorElement.style.display = 'none';
+        noEmailElement.style.display = 'none';
+        noPasswordElement.style.display = 'none';
+        noCountryElement.style.display = 'none';
+
+        if (!emailElement.value) {
+          noEmailElement.style.display = 'block';
+          setSave();
+          return;
+        }
+        if (!passwordElement.value) {
+          noPasswordElement.style.display = 'block';
+          setSave();
+          return;
+        }
+        if (!countryElement.value) {
+          noCountryElement.style.display = 'block';
+          setSave();
+          return;
+        }
+
+        setSaving();
+        const email = emailElement.value;
+        const password = passwordElement.value;
+        const region = countryElement.value;
+
+        Homey.emit("login", { email: email, password: password, region: region }).then(function (result) {
+          if (result === false) {
+            errorElement.style.display = 'block';
+            setSave();
+          }
+        });
+      });
+
+      function setSave() {
+        saveElement.className = 'homey-button-primary-full';
+        saveElement.textContent = Homey.__('pair.save');
+      }
+
+      function setSaving() {
+        saveElement.className = 'homey-button-primary-full is-loading';
+        saveElement.textContent = Homey.__('pair.saving');
+      }
+    </script>
+  </body>
+</html>

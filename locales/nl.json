@@ -1,0 +1,13 @@
+{
+    "pair": {
+        "save": "Opslaan",
+        "saving": "Opslaan",
+        "email": "Email",
+        "password": "Wachtwoord",
+        "country": "Land",
+        "select": "Selecteer een land",
+        "noemail": "Voer een emailadres in",
+        "nopassword": "Voer een wachtwoord in",
+        "nocountry": "Kies een land"
+    }
+}

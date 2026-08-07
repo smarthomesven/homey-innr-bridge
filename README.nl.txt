@@ -1,0 +1,1 @@
+Met deze app kan je je Innr-apparaten gebruiken via de bridge. Door Innr-apparaten via de bridge te verbinden, kan je je apparaten altijd updaten via OTA en geniet je van alle functies in de Innr-app. Deze app is ook compatible met Innr WiFi-lampen.
