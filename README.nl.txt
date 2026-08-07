@@ -1,1 +1,3 @@
 Met deze app kan je je Innr-apparaten gebruiken via de bridge. Door Innr-apparaten via de bridge te verbinden, kan je je apparaten altijd updaten via OTA en geniet je van alle functies in de Innr-app. Deze app is ook compatible met Innr WiFi-lampen.
+
+Let op: je kan geautomatiseerde emails van Innr ontvangen dat er een Galaxy A51 (SM-A515F) is ingelogd op je account. Dit is normaal, de Homey app doet zich voor als een Galaxy A51 smartphone om blokkades te voorkomen.

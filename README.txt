@@ -1,1 +1,3 @@
 With this app, you can connect your Innr devices via the Innr bridge. This way, you can always update your devices via OTA and use all features in the Innr app. This should also be compatible with Innr WiFi devices.
+
+Note: if you get any automated emails from Innr mentioning a Galaxy A51 (SM-A515F) smartphone has logged in to the account, this is completely normal. This Homey app pretends to be a Galaxy A51 to Innr’s servers, to prevent it from getting blocked.
