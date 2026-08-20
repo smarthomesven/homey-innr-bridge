@@ -1,25 +1,19 @@
 'use strict';
-
 const Homey = require('homey');
 const InnrApi = require('./lib/api');
 const InnrMqttClient = require('./lib/mqtt');
-
 module.exports = class InnrBridgeApp extends Homey.App {
-
   async onInit() {
     this.log('Innr Bridge app initializing');
-
     this.api = new InnrApi({
       settings: this.homey.settings,
       log: this.log.bind(this),
     });
-
     this.mqtt = new InnrMqttClient({
       getConfig: this._buildMqttConfig.bind(this),
       log: this.log.bind(this),
       error: this.error.bind(this),
     });
-
     // Route incoming attribute updates to whichever device registers interest.
     // Devices subscribe via app.onAttrUpdate() in their onInit().
     this._attrListeners = new Set();
@@ -28,17 +22,14 @@ module.exports = class InnrBridgeApp extends Homey.App {
         try { cb(devId, attr); } catch (err) { this.error(err); }
       }
     });
-
     // Only auto-connect if we already have a session (i.e. not first install/pre-pairing).
     if (this.homey.settings.get('accessToken') && this.homey.settings.get('refreshToken')) {
       await this._startMqtt().catch((err) => this.error('Startup MQTT connect failed:', err.message || err));
     } else {
       this.log('No stored session yet — MQTT will start after pairing/login');
     }
-
     this.log('Innr Bridge app initialized');
   }
-
   /**
    * Builds fresh MQTT connect params. Called on first connect and on every
    * reconnect by InnrMqttClient, so a rotated mqttConfig.password is always
@@ -60,7 +51,6 @@ module.exports = class InnrBridgeApp extends Homey.App {
       heartbeat: mqttConfig.heartbeat,
     };
   }
-
   /**
    * Fetches the current device list (for gateway/password routing info and to
    * populate settings.houseId, which _buildMqttConfig needs), registers it with
@@ -72,26 +62,34 @@ module.exports = class InnrBridgeApp extends Homey.App {
     this.mqtt.registerDevices(devices);
     await this.mqtt.connect();
   }
-
   /** Called by the driver once login succeeds during pairing. */
   async onLoggedIn() {
     await this._startMqtt();
   }
-
   /** Devices call this in onInit() to receive setDevAttrNotif updates for their devId. */
   onAttrUpdate(cb) {
     this._attrListeners.add(cb);
     return () => this._attrListeners.delete(cb);
   }
-
   /** Re-fetches the device list and re-registers it with the MQTT client (e.g. after repair or new device added). */
   async refreshDeviceRegistry() {
     const devices = await this.api.getAllDevices();
     this.mqtt.registerDevices(devices);
   }
-
+  // --- MQTT debug capture pass-throughs, used by the settings page support form ---
+  startDebugCapture(devId) {
+    return this.mqtt.startDebugCapture(devId);
+  }
+  stopDebugCapture(devId) {
+    return this.mqtt.stopDebugCapture(devId);
+  }
+  getDebugMessages(devId) {
+    return this.mqtt.getDebugMessages(devId);
+  }
+  clearDebugCapture(devId) {
+    this.mqtt.clearDebugCapture(devId);
+  }
   async onUninit() {
     this.mqtt?.disconnect();
   }
-
 };
