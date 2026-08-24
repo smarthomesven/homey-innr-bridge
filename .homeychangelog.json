@@ -16,5 +16,8 @@
   },
   "1.0.5": {
     "en": "Fixed typo in Dutch readme"
+  },
+  "1.0.6": {
+    "en": "Improved pairing view"
   }
 }
