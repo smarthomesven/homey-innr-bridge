@@ -2,9 +2,11 @@
 const Homey = require('homey');
 const InnrApi = require('./lib/api');
 const InnrMqttClient = require('./lib/mqtt');
+const HomeyPush = require('./lib/push');
 module.exports = class InnrBridgeApp extends Homey.App {
   async onInit() {
     this.log('Innr Bridge app initializing');
+    this.push = new HomeyPush(this);
     this.api = new InnrApi({
       settings: this.homey.settings,
       log: this.log.bind(this),
@@ -28,6 +30,7 @@ module.exports = class InnrBridgeApp extends Homey.App {
     } else {
       this.log('No stored session yet — MQTT will start after pairing/login');
     }
+    await this.push.startPush();
     this.log('Innr Bridge app initialized');
   }
   /**
@@ -91,5 +94,6 @@ module.exports = class InnrBridgeApp extends Homey.App {
   }
   async onUninit() {
     this.mqtt?.disconnect();
+    this.push.stopPush();
   }
 };
